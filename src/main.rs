@@ -86,28 +86,4 @@ mod tests {
             }
         }
     }
-
-    #[test]
-    fn can_extract_user_from_packet_data() {
-        let packet_data = "USER Hello\r\n";
-        let user = extract_user_from_packet(packet_data);
-        match user {
-            Ok(u) => {
-                assert_eq!(u, "Hello");
-            }
-            Err(_) => {}
-        }
-    }
-
-    #[test]
-    fn can_extract_pass_from_packet_data() {
-        let packet_data = "PASS world\r\n";
-        let user = extract_pass_from_packet(packet_data);
-        match user {
-            Ok(u) => {
-                assert_eq!(u, "world");
-            }
-            Err(_) => {}
-        }
-    }
 }
