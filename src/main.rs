@@ -4,6 +4,7 @@ use pcap::{Device};
 use pcap::Error as PcapError;
 
 mod packet_processor;
+mod processors;
 
 
 fn find_device_by_name(capture_device: &str) -> Result<Device, Error> {
@@ -20,29 +21,9 @@ fn find_device_by_name(capture_device: &str) -> Result<Device, Error> {
     Err(Error::new(ErrorKind::Other, "Device not found"))
 }
 
-fn extract_user_from_packet(packet: &str) -> Result<String, Error> {
-    if packet.contains("USER") {
-        return Ok(packet.replace("USER ", "").replace("\r\n", ""));
-    } else {
-        return Err(Error::new(ErrorKind::Other, "No user found"));
-    }
-}
-
-fn extract_pass_from_packet(packet: &str) -> Result<String, Error> {
-    if packet.contains("PASS") {
-        return Ok(packet.replace("PASS ", "").replace("\r\n", ""));
-    } else {
-        return Err(Error::new(ErrorKind::Other, "No pass found"));
-    }
-}
-
 fn main() {
-
-
     let capture_device = std::env::args().nth(1).expect("No device name given");
-    
     println!("Learning pcap in rust! (Ctrl-C to stop)");
-
     match find_device_by_name(&capture_device) {
         Ok(device) => {
             println!("Device found: {}", device.name);
@@ -53,12 +34,8 @@ fn main() {
                     println!("Capture started on {}...", capture_device);
                     while let Ok(packet) = cap.next_packet() {
                         if let Ok(packet) = packet_processor::process_packet(&packet){
-                            if let Ok(user) = extract_user_from_packet(&packet.data) {
-                                println!("[{}] {}:{} -> Username : {}", packet.protocol, packet.destination_ip, packet.destination_port, user);
-                            }
-
-                            if let Ok(pass) = extract_pass_from_packet(&packet.data) {
-                                println!("[{}] {}:{} -> Password : {}", packet.protocol, packet.destination_ip, packet.destination_port, pass);
+                            if packet.protocol == "FTP" {
+                                processors::ftp::parse_ftp_data(&packet);
                             }
                         }
                     }

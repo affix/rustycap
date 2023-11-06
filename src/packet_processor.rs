@@ -34,6 +34,10 @@ pub fn process_packet(packet: &Packet)-> Result<PacketData, Error> {
                 protocol = "FTP";
             }
 
+            if dest_port == 80 {
+                protocol = "HTTP";
+            }
+
             let mut destination_ip: String = String::from("Unknown");
                         let mut source_ip: String = String::from("Unknown");
 
