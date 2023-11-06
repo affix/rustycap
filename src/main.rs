@@ -37,10 +37,13 @@ fn extract_pass_from_packet(packet: &str) -> Result<String, Error> {
 }
 
 fn main() {
-    let capture_device = "docker0";
+
+
+    let capture_device = std::env::args().nth(1).expect("No device name given");
+    
     println!("Learning pcap in rust! (Ctrl-C to stop)");
 
-    match find_device_by_name(capture_device) {
+    match find_device_by_name(&capture_device) {
         Ok(device) => {
             println!("Device found: {}", device.name);
             let filter = "tcp port 21";
