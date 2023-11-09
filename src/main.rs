@@ -33,7 +33,7 @@ fn main() {
                     println!("Capture started on {}...", capture_device);
                     while let Ok(packet) = cap.next_packet() {
                         if let Ok(packet) = packet_processor::process_packet(&packet){
-                            if packet.protocol == "FTP" {
+                            if packet.protocol == packet_processor::Protocol::FTP {
                                 processors::ftp::parse_ftp_data(&packet);
                             }
                         }

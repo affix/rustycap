@@ -21,11 +21,11 @@ fn extract_pass_from_packet(packet: &str) -> Result<String, Error> {
 
 pub fn parse_ftp_data(packet: &PacketData){
   if let Ok(user) = extract_user_from_packet(&packet.data) {
-      println!("[{}] {}:{} -> Username : {}", packet.protocol, packet.destination_ip, packet.destination_port, user);
+      println!("[FTP] {}:{} -> Username : {}", packet.destination_ip, packet.destination_port, user);
   }
 
   if let Ok(pass) = extract_pass_from_packet(&packet.data) {
-      println!("[{}] {}:{} -> Password : {}", packet.protocol, packet.destination_ip, packet.destination_port, pass);
+      println!("[FTP] {}:{} -> Password : {}", packet.destination_ip, packet.destination_port, pass);
   }
 }
 

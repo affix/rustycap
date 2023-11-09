@@ -2,8 +2,15 @@ use etherparse::SlicedPacket;
 use std::io::{Error, ErrorKind};
 use pcap::Packet;
 
+#[derive(PartialEq)]
+pub enum Protocol {
+    FTP,
+    HTTP,
+    Unknown
+}
+
 pub struct PacketData {
-    pub protocol: String,
+    pub protocol: Protocol,
     pub source_ip: String,
     pub source_port: u16,
     pub destination_ip: String,
@@ -21,7 +28,7 @@ pub fn process_packet(packet: &Packet)-> Result<PacketData, Error> {
             use etherparse::TransportSlice::Tcp;
             use etherparse::LinkSlice::Ethernet2;
 
-            let mut protocol = "Unknown";
+            let mut protocol = Protocol::Unknown;
             let mut src_port: u16 = 0;
             let mut dest_port: u16 = 0; 
 
@@ -31,11 +38,11 @@ pub fn process_packet(packet: &Packet)-> Result<PacketData, Error> {
             }  
 
             if dest_port == 21 {
-                protocol = "FTP";
+                protocol = Protocol::FTP;
             }
 
             if dest_port == 80 {
-                protocol = "HTTP";
+                protocol = Protocol::HTTP;
             }
 
             let mut destination_ip: String = String::from("Unknown");
@@ -52,7 +59,7 @@ pub fn process_packet(packet: &Packet)-> Result<PacketData, Error> {
             let payload_data = String::from_utf8_lossy(value.payload);
 
             return Ok(PacketData {
-                protocol: String::from(protocol),
+                protocol: protocol,
                 source_ip: source_ip,
                 source_port: src_port,
                 destination_ip: destination_ip,
