@@ -27,7 +27,7 @@ fn main() {
     match find_device_by_name(&capture_device) {
         Ok(device) => {
             println!("Device found: {}", device.name);
-            let filter = "tcp port 21";
+
             match pcap::Capture::from_device(device).unwrap().immediate_mode(true).open() {
                 Ok(mut cap) => {
                     cap.filter(filter, true).unwrap();
