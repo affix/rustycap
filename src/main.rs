@@ -30,7 +30,6 @@ fn main() {
 
             match pcap::Capture::from_device(device).unwrap().immediate_mode(true).open() {
                 Ok(mut cap) => {
-                    cap.filter(filter, true).unwrap();
                     println!("Capture started on {}...", capture_device);
                     while let Ok(packet) = cap.next_packet() {
                         if let Ok(packet) = packet_processor::process_packet(&packet){
